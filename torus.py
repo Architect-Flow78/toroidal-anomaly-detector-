@@ -1,5 +1,3 @@
-
-# torus.py
 import numpy as np
 
 class MultiPhaseTorus:
@@ -31,7 +29,7 @@ class MultiPhaseTorus:
 
         speed = np.linalg.norm(dx)
         if speed == 0:
-            return self._victim("застой энергии", 10.0)
+            return self._unstable("stagnation", 10.0)
 
         direction = dx / speed
         curvature = 0 if self.prev_dx is None else np.linalg.norm(dx - self.prev_dx)
@@ -58,16 +56,16 @@ class MultiPhaseTorus:
         score = max(ratios)
 
         if score > 6.0:
-            return self._victim("резонанс фаз", score)
+            return self._unstable("phase_resonance", score)
 
         return {
-            "mode": "ТВОРЕЦ",
+            "state": "nominal",
             "anomaly_score": score
         }
 
-    def _victim(self, reason, score):
+    def _unstable(self, reason, score):
         return {
-            "mode": "ЖЕРТВА",
+            "state": "unstable",
             "reason": reason,
             "anomaly_score": score
         }
